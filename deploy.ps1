@@ -40,6 +40,10 @@ Set-Content -Path web/dist/config.json -Value "{ `"apiUrl`": `"$ApiUrl`" }" -Enc
 
 Write-Host "==> Uploading to s3://$Bucket"
 Invoke-Step { aws s3 sync web/dist "s3://$Bucket" --delete --region $Region }
+# Hashed assets can be cached forever, but browsers must revalidate these so new deploys show up
+foreach ($file in "index.html", "config.json") {
+  Invoke-Step { aws s3 cp "web/dist/$file" "s3://$Bucket/$file" --cache-control "no-cache" --region $Region }
+}
 Invoke-Step { aws cloudfront create-invalidation --distribution-id $DistId --paths "/*" | Out-Null }
 
 Write-Host "==> Done"

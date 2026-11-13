@@ -36,6 +36,10 @@ printf '{ "apiUrl": "%s" }\n' "$API_URL" > web/dist/config.json
 
 echo "==> Uploading to s3://$BUCKET"
 aws s3 sync web/dist "s3://$BUCKET" --delete --region "$REGION"
+# Hashed assets can be cached forever, but browsers must revalidate these so new deploys show up
+for file in index.html config.json; do
+  aws s3 cp "web/dist/$file" "s3://$BUCKET/$file" --cache-control "no-cache" --region "$REGION"
+done
 aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*" >/dev/null
 
 echo "==> Done"
