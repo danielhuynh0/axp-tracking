@@ -103,7 +103,7 @@ export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
       {summary && <WeekSummary week={summary} title="Week summary by category" />}
 
       
-      <h3 className="section-title">Weekly entries</h3>
+      <h3 className="section-title">Entries for this week</h3>
       {entries && entries.length === 0 && <p className="muted center">No entries this week yet.</p>}
 
       <ul className="entries">
