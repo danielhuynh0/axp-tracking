@@ -2,17 +2,7 @@
 # Usage: AXP_PASSPHRASE=... ./deploy.sh [stack-name] [region]
 set -euo pipefail
 
-# Load KEY=VALUE pairs from .env (variables already set in the shell win)
-ENV_FILE="$(dirname "$0")/.env"
-if [[ -f "$ENV_FILE" ]]; then
-  while IFS= read -r line || [[ -n "$line" ]]; do
-    line="${line%$'\r'}"
-    [[ "$line" =~ ^[[:space:]]*([A-Za-z_][A-Za-z0-9_]*)[[:space:]]*=[[:space:]]*(.*[^[:space:]])?[[:space:]]*$ ]] || continue
-    name="${BASH_REMATCH[1]}"; value="${BASH_REMATCH[2]:-}"
-    [[ "$value" =~ ^\"(.*)\"$ || "$value" =~ ^\'(.*)\'$ ]] && value="${BASH_REMATCH[1]}"
-    [[ -z "${!name:-}" ]] && export "$name=$value"
-  done < "$ENV_FILE"
-fi
+source "$(dirname "$0")/scripts/load-env.sh"
 
 STACK="${1:-axp-tracker}"
 REGION="${2:-${AWS_REGION:-us-east-1}}"

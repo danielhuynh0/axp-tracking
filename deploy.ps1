@@ -5,16 +5,7 @@ param(
 )
 $ErrorActionPreference = "Stop"
 
-# Load KEY=VALUE pairs from .env (variables already set in the shell win)
-$EnvFile = Join-Path $PSScriptRoot ".env"
-if (Test-Path $EnvFile) {
-  foreach ($line in Get-Content $EnvFile) {
-    if ($line -match '^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$') {
-      $name = $Matches[1]; $value = $Matches[2] -replace '^(["''])(.*)\1$', '$2'
-      if (-not [Environment]::GetEnvironmentVariable($name)) { Set-Item "env:$name" $value }
-    }
-  }
-}
+. (Join-Path $PSScriptRoot "scripts/load-env.ps1")
 if (-not $PSBoundParameters.ContainsKey("Region") -and $env:AWS_REGION) { $Region = $env:AWS_REGION }
 
 if (-not $env:AXP_PASSPHRASE) { throw "Set `$env:AXP_PASSPHRASE (min 8 chars)" }

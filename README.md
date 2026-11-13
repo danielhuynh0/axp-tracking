@@ -32,6 +32,18 @@ syncs it to S3, and invalidates CloudFront. The first deploy takes ~5 minutes (C
 
 The DynamoDB table is retained if the stack is deleted, so data isn't lost by accident.
 
+## Clearing data
+
+Deletes every entry from the deployed table (asks you to type `delete` first). Uses the same `.env`.
+
+```powershell
+.\clear-data.ps1            # add -Force to skip the prompt
+```
+
+```bash
+./clear-data.sh             # ./clear-data.sh axp-tracker us-west-2 --force to skip the prompt
+```
+
 ## API
 
 All routes except `/health` require `Authorization: Bearer <passphrase>`.
