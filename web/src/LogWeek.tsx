@@ -95,12 +95,12 @@ export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
         )}
       </div>
 
-      {summary && <WeekSummary week={summary} title="By category" />}
-
       <div className="card">
         <h3>Add entry</h3>
         <EntryForm weekStart={weekStart} projectSuggestions={allProjects} onSave={create} />
       </div>
+
+      {summary && <WeekSummary week={summary} title="Summary by category" />}
 
       {entries && entries.length === 0 && <p className="muted center">No entries this week yet.</p>}
 
