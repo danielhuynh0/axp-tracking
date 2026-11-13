@@ -63,7 +63,7 @@ export function Report({ onError }: { onError: (err: unknown) => void }) {
 
           <div className="card summary">
             <div className="entry-head">
-              <h3>{rangeLabel}</h3>
+              <h3>{rangeLabel} Summary</h3>
               <span className="hours-badge">{formatHours(report.total)}</span>
             </div>
             <table className="totals">
