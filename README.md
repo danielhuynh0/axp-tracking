@@ -2,6 +2,8 @@
 
 Weekly NCARB AXP hour logging and reporting.
 
+Check it out: https://d21owdxrybbh5e.cloudfront.net/
+
 - `web/` — Vite + React app, served from a private S3 bucket through CloudFront
 - `api/` — single Lambda behind an API Gateway HTTP API
 - `template.yaml` — SAM template (DynamoDB, Lambda, HTTP API, S3, CloudFront)
