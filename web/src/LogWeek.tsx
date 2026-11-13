@@ -1,7 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "./api";
 import { EntryForm } from "./EntryForm";
-import { addWeeks, categoryName, formatHours, formatWeek, weekStartOf, type Entry, type EntryInput } from "./domain";
+import {
+  addWeeks,
+  buildReport,
+  categoryName,
+  formatHours,
+  formatWeek,
+  weekStartOf,
+  type Entry,
+  type EntryInput,
+} from "./domain";
+import { WeekSummary } from "./WeekSummary";
 
 export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
   const [weekStart, setWeekStart] = useState(() => weekStartOf(new Date()));
@@ -33,6 +43,10 @@ export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
   }, []);
 
   const total = useMemo(() => (entries ?? []).reduce((sum, e) => sum + e.hours, 0), [entries]);
+  const summary = useMemo(
+    () => (entries?.length ? buildReport(entries, weekStart, weekStart).weeks[0] : null),
+    [entries, weekStart],
+  );
   const allProjects = useMemo(
     () => [...new Set([...projects, ...(entries ?? []).map((e) => e.project)])].sort(),
     [projects, entries],
@@ -86,6 +100,10 @@ export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
         <EntryForm weekStart={weekStart} projectSuggestions={allProjects} onSave={create} />
       </div>
 
+      {summary && <WeekSummary week={summary} title="Week summary by category" />}
+
+      
+      <h3 className="section-title">Entries for this week</h3>
       {entries && entries.length === 0 && <p className="muted center">No entries this week yet.</p>}
 
       <ul className="entries">

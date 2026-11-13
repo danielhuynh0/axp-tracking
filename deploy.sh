@@ -2,17 +2,7 @@
 # Usage: AXP_PASSPHRASE=... ./deploy.sh [stack-name] [region]
 set -euo pipefail
 
-# Load KEY=VALUE pairs from .env (variables already set in the shell win)
-ENV_FILE="$(dirname "$0")/.env"
-if [[ -f "$ENV_FILE" ]]; then
-  while IFS= read -r line || [[ -n "$line" ]]; do
-    line="${line%$'\r'}"
-    [[ "$line" =~ ^[[:space:]]*([A-Za-z_][A-Za-z0-9_]*)[[:space:]]*=[[:space:]]*(.*[^[:space:]])?[[:space:]]*$ ]] || continue
-    name="${BASH_REMATCH[1]}"; value="${BASH_REMATCH[2]:-}"
-    [[ "$value" =~ ^\"(.*)\"$ || "$value" =~ ^\'(.*)\'$ ]] && value="${BASH_REMATCH[1]}"
-    [[ -z "${!name:-}" ]] && export "$name=$value"
-  done < "$ENV_FILE"
-fi
+source "$(dirname "$0")/scripts/load-env.sh"
 
 STACK="${1:-axp-tracker}"
 REGION="${2:-${AWS_REGION:-us-east-1}}"
@@ -46,6 +36,10 @@ printf '{ "apiUrl": "%s" }\n' "$API_URL" > web/dist/config.json
 
 echo "==> Uploading to s3://$BUCKET"
 aws s3 sync web/dist "s3://$BUCKET" --delete --region "$REGION"
+# Hashed assets can be cached forever, but browsers must revalidate these so new deploys show up
+for file in index.html config.json; do
+  aws s3 cp "web/dist/$file" "s3://$BUCKET/$file" --cache-control "no-cache" --region "$REGION"
+done
 aws cloudfront create-invalidation --distribution-id "$DIST_ID" --paths "/*" >/dev/null
 
 echo "==> Done"

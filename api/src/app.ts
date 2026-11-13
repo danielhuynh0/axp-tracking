@@ -36,6 +36,8 @@ export function createApp(repo: EntryRepository, passphrase: string): Handler {
   return async (event) => {
     const { method, path } = event.requestContext.http;
 
+    // The ANY route forwards CORS preflights here; API Gateway adds the CORS headers
+    if (method === "OPTIONS") return json(204);
     if (method === "GET" && path === "/health") return json(200, { ok: true });
     if (!isAuthorized(event)) return json(401, { error: "Unauthorized" });
 

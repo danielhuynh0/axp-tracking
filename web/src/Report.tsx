@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "./api";
 import { addWeeks, buildReport, formatHours, formatWeek, snapToWeek, weekStartOf, type Entry } from "./domain";
+import { WeekSummary } from "./WeekSummary";
 
 export function Report({ onError }: { onError: (err: unknown) => void }) {
   const thisWeek = weekStartOf(new Date());
@@ -62,7 +63,7 @@ export function Report({ onError }: { onError: (err: unknown) => void }) {
 
           <div className="card summary">
             <div className="entry-head">
-              <h3>{rangeLabel}</h3>
+              <h3>{rangeLabel} Summary</h3>
               <span className="hours-badge">{formatHours(report.total)}</span>
             </div>
             <table className="totals">
@@ -78,32 +79,7 @@ export function Report({ onError }: { onError: (err: unknown) => void }) {
           </div>
 
           {report.weeks.map((week) => (
-            <div key={week.weekStart} className="card week">
-              <div className="entry-head">
-                <h3>{formatWeek(week.weekStart)}</h3>
-                <span className="hours-badge">{formatHours(week.total)}</span>
-              </div>
-              {week.categories.length === 0 && <p className="muted">No hours logged.</p>}
-              {week.categories.map((cat) => (
-                <div key={cat.id} className="report-category">
-                  <div className="entry-head">
-                    <strong>{cat.name}</strong>
-                    <span>{formatHours(cat.total)}</span>
-                  </div>
-                  <ul>
-                    {cat.lines.map((line) => (
-                      <li key={line.entryId}>
-                        <div className="entry-head">
-                          <span>{line.project}</span>
-                          <span className="muted">{formatHours(line.hours)}</span>
-                        </div>
-                        {line.note && <p className="note muted">{line.note}</p>}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+            <WeekSummary key={week.weekStart} week={week} title={formatWeek(week.weekStart)} />
           ))}
         </>
       )}

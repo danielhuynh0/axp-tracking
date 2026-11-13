@@ -5,16 +5,7 @@ param(
 )
 $ErrorActionPreference = "Stop"
 
-# Load KEY=VALUE pairs from .env (variables already set in the shell win)
-$EnvFile = Join-Path $PSScriptRoot ".env"
-if (Test-Path $EnvFile) {
-  foreach ($line in Get-Content $EnvFile) {
-    if ($line -match '^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$') {
-      $name = $Matches[1]; $value = $Matches[2] -replace '^(["''])(.*)\1$', '$2'
-      if (-not [Environment]::GetEnvironmentVariable($name)) { Set-Item "env:$name" $value }
-    }
-  }
-}
+. (Join-Path $PSScriptRoot "scripts/load-env.ps1")
 if (-not $PSBoundParameters.ContainsKey("Region") -and $env:AWS_REGION) { $Region = $env:AWS_REGION }
 
 if (-not $env:AXP_PASSPHRASE) { throw "Set `$env:AXP_PASSPHRASE (min 8 chars)" }
@@ -49,6 +40,10 @@ Set-Content -Path web/dist/config.json -Value "{ `"apiUrl`": `"$ApiUrl`" }" -Enc
 
 Write-Host "==> Uploading to s3://$Bucket"
 Invoke-Step { aws s3 sync web/dist "s3://$Bucket" --delete --region $Region }
+# Hashed assets can be cached forever, but browsers must revalidate these so new deploys show up
+foreach ($file in "index.html", "config.json") {
+  Invoke-Step { aws s3 cp "web/dist/$file" "s3://$Bucket/$file" --cache-control "no-cache" --region $Region }
+}
 Invoke-Step { aws cloudfront create-invalidation --distribution-id $DistId --paths "/*" | Out-Null }
 
 Write-Host "==> Done"
