@@ -33,6 +33,10 @@ describe("api", () => {
     expect((await call("GET", "/health", { token: null })).status).toBe(200);
   });
 
+  it("answers CORS preflight without auth", async () => {
+    expect((await call("OPTIONS", "/auth", { token: null })).status).toBe(204);
+  });
+
   it("rejects missing or wrong passphrase", async () => {
     expect((await call("GET", "/auth", { token: null })).status).toBe(401);
     expect((await call("GET", "/auth", { token: "nope" })).status).toBe(401);
