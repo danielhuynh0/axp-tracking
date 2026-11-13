@@ -1,0 +1,102 @@
+:root {
+  --bg: #f6f5f2;
+  --card: #ffffff;
+  --text: #1f2328;
+  --muted: #6b7078;
+  --border: #dcdad5;
+  --accent: #2f5d8a;
+  --danger: #b42318;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--text);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); }
+
+.app { max-width: 760px; margin: 0 auto; padding: 16px; }
+header { display: flex; justify-content: space-between; align-items: center; }
+header h1 { font-size: 1.25rem; }
+
+h2, h3 { margin: 0; }
+h3 { font-size: 1rem; margin-bottom: 12px; }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+.login { max-width: 360px; margin: 15vh auto; display: grid; gap: 12px; }
+.login h1 { margin: 0; font-size: 1.4rem; }
+
+label { display: grid; gap: 4px; font-size: 0.875rem; font-weight: 500; }
+input, textarea { font: inherit; padding: 8px; border: 1px solid var(--border); border-radius: 6px; width: 100%; }
+textarea { resize: vertical; }
+fieldset { border: 0; padding: 0; margin: 0; }
+legend { font-size: 0.875rem; font-weight: 500; margin-bottom: 6px; }
+
+button { font: inherit; cursor: pointer; border-radius: 6px; padding: 8px 14px; border: 1px solid var(--accent); background: var(--accent); color: #fff; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+button.secondary { background: var(--card); color: var(--accent); }
+button.link { background: none; border: 0; padding: 4px 6px; color: var(--accent); }
+button.link.danger { color: var(--danger); }
+
+.entry-form { display: grid; gap: 12px; }
+.row { display: flex; gap: 12px; }
+.hours { width: 110px; flex: none; }
+.grow { flex: 1; }
+.categories { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px 16px; }
+.check { display: flex; align-items: center; gap: 8px; font-weight: 400; }
+.check input { width: auto; }
+.actions { display: flex; gap: 8px; align-items: center; }
+
+.week-nav { display: flex; align-items: center; gap: 12px; margin: 8px 0 16px; flex-wrap: wrap; }
+.week-title { flex: 1; text-align: center; }
+.week-title h2 { font-size: 1.1rem; }
+
+.entries { list-style: none; padding: 0; margin: 0; }
+.entry p { margin: 6px 0; }
+.entry-head { display: flex; justify-content: space-between; gap: 12px; }
+.hours-badge { font-weight: 600; color: var(--accent); }
+.note { white-space: pre-wrap; }
+
+.muted { color: var(--muted); font-size: 0.875rem; margin: 0; }
+.center { text-align: center; margin: 24px 0; }
+.error { color: var(--danger); margin: 0; font-size: 0.875rem; }
+.banner { background: #fdecea; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 12px; }
+
+nav { display: flex; gap: 4px; align-items: center; }
+button.tab { background: none; border: 0; color: var(--muted); padding: 6px 10px; border-radius: 6px; }
+button.tab.active { background: var(--card); color: var(--accent); border: 1px solid var(--border); }
+
+.range { display: flex; gap: 12px; flex-wrap: wrap; }
+.range label { flex: 1; min-width: 160px; }
+.totals { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.9rem; }
+.totals td { padding: 4px 0; border-top: 1px solid var(--border); }
+.totals tr.muted td { color: var(--muted); }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.week > .entry-head { margin-bottom: 8px; }
+.report-category { border-top: 1px solid var(--border); padding: 8px 0; }
+.report-category ul { list-style: none; margin: 6px 0 0; padding-left: 16px; }
+.report-category li { margin-bottom: 6px; }
+.report-category .note { margin: 2px 0 0; }
+
+.range button { align-self: end; }
+.print-only { display: none; }
+
+@media print {
+  @page { margin: 0.6in; }
+  body { background: #fff; font-size: 11pt; }
+  .app { max-width: none; padding: 0; }
+  .no-print { display: none !important; }
+  .print-only { display: block; }
+  .report-title { margin-bottom: 12pt; }
+  .report-title h1 { font-size: 16pt; margin: 0 0 2pt; }
+  .card { border: 0; border-radius: 0; padding: 0; margin: 0 0 14pt; background: none; }
+  .summary { border-bottom: 1.5pt solid var(--text); padding-bottom: 8pt; }
+  .week { break-inside: avoid; }
+  .week > .entry-head { border-bottom: 1pt solid var(--text); padding-bottom: 2pt; }
+  .report-category { border-top: 0; padding: 4pt 0 0 14pt; break-inside: avoid; }
+  .hours-badge { color: var(--text); }
+  .muted { color: #444; }
+}
+
+@media (max-width: 520px) {
+  .row { flex-direction: column; }
+  .hours { width: 100%; }
+}
