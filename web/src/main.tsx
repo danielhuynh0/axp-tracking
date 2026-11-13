@@ -28,7 +28,7 @@ function App() {
 
   return (
     <div className="app">
-      <header>
+      <header className="no-print">
         <h1>AXP Tracker</h1>
         <nav>
           <button className={`tab ${view === "log" ? "active" : ""}`} onClick={() => setView("log")}>
@@ -43,7 +43,7 @@ function App() {
         </nav>
       </header>
       {error && (
-        <p className="error banner" onClick={() => setError(null)}>
+        <p className="error banner no-print" onClick={() => setError(null)}>
           {error} (dismiss)
         </p>
       )}

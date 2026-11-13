@@ -76,6 +76,26 @@ button.tab.active { background: var(--card); color: var(--accent); border: 1px s
 .report-category li { margin-bottom: 6px; }
 .report-category .note { margin: 2px 0 0; }
 
+.range button { align-self: end; }
+.print-only { display: none; }
+
+@media print {
+  @page { margin: 0.6in; }
+  body { background: #fff; font-size: 11pt; }
+  .app { max-width: none; padding: 0; }
+  .no-print { display: none !important; }
+  .print-only { display: block; }
+  .report-title { margin-bottom: 12pt; }
+  .report-title h1 { font-size: 16pt; margin: 0 0 2pt; }
+  .card { border: 0; border-radius: 0; padding: 0; margin: 0 0 14pt; background: none; }
+  .summary { border-bottom: 1.5pt solid var(--text); padding-bottom: 8pt; }
+  .week { break-inside: avoid; }
+  .week > .entry-head { border-bottom: 1pt solid var(--text); padding-bottom: 2pt; }
+  .report-category { border-top: 0; padding: 4pt 0 0 14pt; break-inside: avoid; }
+  .hours-badge { color: var(--text); }
+  .muted { color: #444; }
+}
+
 @media (max-width: 520px) {
   .row { flex-direction: column; }
   .hours { width: 100%; }

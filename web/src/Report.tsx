@@ -24,10 +24,19 @@ export function Report({ onError }: { onError: (err: unknown) => void }) {
   }, [from, to, validRange, onError]);
 
   const report = useMemo(() => (entries ? buildReport(entries, from, to) : null), [entries, from, to]);
+  const rangeLabel = `${formatWeek(from).split(" – ")[0]} – ${formatWeek(to).split(" – ")[1]}`;
+
+  function print() {
+    // The document title becomes the default PDF filename
+    const previous = document.title;
+    document.title = `AXP Hours ${from} to ${to}`;
+    window.print();
+    document.title = previous;
+  }
 
   return (
     <section>
-      <div className="card range">
+      <div className="card range no-print">
         <label>
           From week of
           <input type="date" value={from} onChange={(e) => e.target.value && setFrom(snapToWeek(e.target.value))} />
@@ -36,6 +45,9 @@ export function Report({ onError }: { onError: (err: unknown) => void }) {
           To week of
           <input type="date" value={to} onChange={(e) => e.target.value && setTo(snapToWeek(e.target.value))} />
         </label>
+        <button onClick={print} disabled={!report}>
+          Print / Save as PDF
+        </button>
       </div>
 
       {!validRange && <p className="error">"From" must be on or before "To".</p>}
@@ -43,11 +55,14 @@ export function Report({ onError }: { onError: (err: unknown) => void }) {
 
       {report && (
         <>
-          <div className="card">
+          <div className="print-only report-title">
+            <h1>AXP Hours Report</h1>
+            <p className="muted">Generated {new Date().toLocaleDateString()}</p>
+          </div>
+
+          <div className="card summary">
             <div className="entry-head">
-              <h3>
-                {formatWeek(from).split(" – ")[0]} – {formatWeek(to).split(" – ")[1]}
-              </h3>
+              <h3>{rangeLabel}</h3>
               <span className="hours-badge">{formatHours(report.total)}</span>
             </div>
             <table className="totals">
