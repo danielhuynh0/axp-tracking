@@ -69,10 +69,12 @@ cd api && npm install && npm test
 ```
 
 <img width="927" height="900" alt="image" src="https://github.com/user-attachments/assets/265dcca0-eb57-4d66-bef8-5d9ad9557831" />
+
 Adding new entries
 
 
 <img width="1355" height="883" alt="image" src="https://github.com/user-attachments/assets/26d4c4ef-6a36-4bf1-a3e8-20a0699264ea" />
+
 Generating report
 
 ## Local web dev
