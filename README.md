@@ -15,14 +15,6 @@ Check it out (jk you need the password, haven't added a demo account yet): https
 - AWS CLI v2, configured (`aws configure`)
 - AWS SAM CLI
 
-
-<img width="927" height="900" alt="image" src="https://github.com/user-attachments/assets/265dcca0-eb57-4d66-bef8-5d9ad9557831" />
-Adding new entries
-
-<img width="1355" height="883" alt="image" src="https://github.com/user-attachments/assets/26d4c4ef-6a36-4bf1-a3e8-20a0699264ea" />
-Generating report
-
-
 ## Deploy
 
 Copy `.env.example` to `.env` and fill in `AXP_PASSPHRASE`, `AWS_PROFILE` and `AWS_REGION`.
@@ -75,6 +67,13 @@ Entries store raw hours — the equal split across categories is computed by the
 ```bash
 cd api && npm install && npm test
 ```
+
+<img width="927" height="900" alt="image" src="https://github.com/user-attachments/assets/265dcca0-eb57-4d66-bef8-5d9ad9557831" />
+Adding new entries
+
+
+<img width="1355" height="883" alt="image" src="https://github.com/user-attachments/assets/26d4c4ef-6a36-4bf1-a3e8-20a0699264ea" />
+Generating report
 
 ## Local web dev
 
