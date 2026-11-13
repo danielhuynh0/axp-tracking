@@ -2,7 +2,7 @@
 
 Weekly NCARB AXP hour logging and reporting.
 
-Check it out: https://d21owdxrybbh5e.cloudfront.net/
+Check it out (jk you need the password, haven't added a demo account yet): https://d21owdxrybbh5e.cloudfront.net/
 
 - `web/` — Vite + React app, served from a private S3 bucket through CloudFront
 - `api/` — single Lambda behind an API Gateway HTTP API
