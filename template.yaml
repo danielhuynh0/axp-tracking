@@ -35,6 +35,10 @@ Resources:
   HttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
+      # Plenty for one user; caps cost if someone hammers the API (throttled requests aren't billed)
+      DefaultRouteSettings:
+        ThrottlingRateLimit: 10
+        ThrottlingBurstLimit: 20
       CorsConfiguration:
         AllowOrigins:
           - !Sub "https://${Distribution.DomainName}"
