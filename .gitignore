@@ -1,11 +1,5 @@
 node_modules/
 dist/
 .aws-sam/
-.tools/
-.env
-.env.*
-!.env.example
-*.tsbuildinfo
-coverage/
 samconfig.toml
-
+.env*
