@@ -1,5 +1,8 @@
 node_modules/
 dist/
+.dev/
 .aws-sam/
 samconfig.toml
 .env*
+!.env.example
+*.txt

@@ -11,7 +11,7 @@ Parameters:
 
 Globals:
   Function:
-    Runtime: nodejs20.x
+    Runtime: nodejs24.x
     Architectures: [arm64]
     MemorySize: 256
     Timeout: 10
@@ -45,7 +45,7 @@ Resources:
   ApiFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: api/
+      CodeUri: api/dist/ # bundled by `npm run build` in api/
       Handler: handler.handler
       Environment:
         Variables:
@@ -61,13 +61,6 @@ Resources:
             ApiId: !Ref HttpApi
             Path: /{proxy+}
             Method: ANY
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        EntryPoints: [src/handler.ts]
-        Target: es2022
-        Format: cjs
-        Minify: true
 
   WebBucket:
     Type: AWS::S3::Bucket

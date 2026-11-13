@@ -1,17 +1,7 @@
-import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
+import { createApp } from "./app";
+import { createDynamoRepository } from "./repository";
 
-const json = (statusCode: number, body: unknown): APIGatewayProxyResultV2 => ({
-  statusCode,
-  headers: { "content-type": "application/json" },
-  body: JSON.stringify(body),
-});
+const { TABLE_NAME, APP_PASSPHRASE } = process.env;
+if (!TABLE_NAME || !APP_PASSPHRASE) throw new Error("TABLE_NAME and APP_PASSPHRASE must be set");
 
-export const handler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResultV2> => {
-  const { method, path } = event.requestContext.http;
-
-  if (method === "GET" && path === "/health") {
-    return json(200, { ok: true });
-  }
-
-  return json(404, { error: "Not found" });
-};
+export const handler = createApp(createDynamoRepository(TABLE_NAME), APP_PASSPHRASE);

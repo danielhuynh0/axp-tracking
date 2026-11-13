@@ -4,6 +4,19 @@ param(
   [string]$Region = $(if ($env:AWS_REGION) { $env:AWS_REGION } else { "us-east-1" })
 )
 $ErrorActionPreference = "Stop"
+
+# Load KEY=VALUE pairs from .env (variables already set in the shell win)
+$EnvFile = Join-Path $PSScriptRoot ".env"
+if (Test-Path $EnvFile) {
+  foreach ($line in Get-Content $EnvFile) {
+    if ($line -match '^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$') {
+      $name = $Matches[1]; $value = $Matches[2] -replace '^(["''])(.*)\1$', '$2'
+      if (-not [Environment]::GetEnvironmentVariable($name)) { Set-Item "env:$name" $value }
+    }
+  }
+}
+if (-not $PSBoundParameters.ContainsKey("Region") -and $env:AWS_REGION) { $Region = $env:AWS_REGION }
+
 if (-not $env:AXP_PASSPHRASE) { throw "Set `$env:AXP_PASSPHRASE (min 8 chars)" }
 
 function Invoke-Step([scriptblock]$Block) {
@@ -14,8 +27,7 @@ function Invoke-Step([scriptblock]$Block) {
 Set-Location $PSScriptRoot
 
 Write-Host "==> Building and deploying stack $Stack ($Region)"
-Push-Location api; Invoke-Step { npm install }; Pop-Location
-Invoke-Step { sam build }
+Push-Location api; Invoke-Step { npm install }; Invoke-Step { npm run typecheck }; Invoke-Step { npm test }; Invoke-Step { npm run build }; Pop-Location
 Invoke-Step {
   sam deploy --stack-name $Stack --region $Region --resolve-s3 `
     --capabilities CAPABILITY_IAM --no-confirm-changeset --no-fail-on-empty-changeset `

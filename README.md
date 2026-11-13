@@ -14,6 +14,10 @@ Weekly NCARB AXP hour logging and reporting.
 
 ## Deploy
 
+Copy `.env.example` to `.env` and fill in `AXP_PASSPHRASE`, `AWS_PROFILE` and `AWS_REGION`.
+The deploy scripts load it automatically (variables already set in your shell take precedence), so
+you can just run `.\deploy.ps1` or `./deploy.sh`. Alternatively, set the variables inline:
+
 ```bash
 AXP_PASSPHRASE='choose-a-passphrase' ./deploy.sh            # bash / Git Bash
 ```
@@ -28,10 +32,35 @@ syncs it to S3, and invalidates CloudFront. The first deploy takes ~5 minutes (C
 
 The DynamoDB table is retained if the stack is deleted, so data isn't lost by accident.
 
-## Local web dev
+## API
+
+All routes except `/health` require `Authorization: Bearer <passphrase>`.
+
+| Method | Path | Notes |
+| --- | --- | --- |
+| GET | `/health` | Unauthenticated liveness check |
+| GET | `/auth` | 200 if the passphrase is valid (used by the login screen) |
+| GET | `/categories` | The 6 AXP categories `{ id, name }` in NCARB order |
+| GET | `/entries?from=&to=` | Entries whose week is in `[from, to]` (both Sundays, `YYYY-MM-DD`) |
+| POST | `/entries` | Body: `{ weekStart, hours, project, note, categories }` → 201 |
+| PUT | `/entries/{id}` | Same body; `weekStart` must match the entry's week |
+| DELETE | `/entries/{id}` | 204 |
+
+Weeks start on Sunday. Hours are in 0.25 increments; category IDs are `PcM, PjM, PA, PPD, PDD, CE`.
+Entries store raw hours — the equal split across categories is computed by the client.
 
 ```bash
-cd web && npm install && npm run dev
+cd api && npm install && npm test
 ```
 
-Edit `web/public/config.json` to point `apiUrl` at the deployed API (`http://localhost:5173` is allowed by CORS).
+## Local web dev
+
+Two terminals:
+
+```bash
+cd api && npm run dev    # in-memory API on :3000, passphrase "dev-passphrase"
+cd web && npm run dev    # http://localhost:5173
+```
+
+`web/public/config.json` points at the local API. To use the deployed API instead, set `apiUrl`
+to the stack's `ApiUrl` output (`http://localhost:5173` is allowed by CORS).
