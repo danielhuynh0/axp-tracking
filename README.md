@@ -1,12 +1,17 @@
 # AXP Tracker
 
 Weekly NCARB AXP hour logging and reporting.
+Generate a PDF report based on reported hour entries in a given range of weeks.
 
 Check it out (jk you need the password, haven't added a demo account yet): https://d21owdxrybbh5e.cloudfront.net/
 
 - `web/` — Vite + React app, served from a private S3 bucket through CloudFront
 - `api/` — single Lambda behind an API Gateway HTTP API
 - `template.yaml` — SAM template (DynamoDB, Lambda, HTTP API, S3, CloudFront)
+
+<img width="746" height="357" alt="image" src="https://github.com/user-attachments/assets/c6b4247b-303d-490f-8f17-7e1136f26556" />
+<img width="927" height="900" alt="image" src="https://github.com/user-attachments/assets/265dcca0-eb57-4d66-bef8-5d9ad9557831" />
+<img width="1355" height="883" alt="image" src="https://github.com/user-attachments/assets/26d4c4ef-6a36-4bf1-a3e8-20a0699264ea" />
 
 ## Prerequisites
 
