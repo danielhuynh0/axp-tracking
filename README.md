@@ -4,6 +4,7 @@ Weekly NCARB AXP hour logging and reporting.
 Generate a PDF report based on reported hour entries in a given range of weeks.
 
 Check it out (jk you need the password, haven't added a demo account yet): https://d21owdxrybbh5e.cloudfront.net/
+
 Check out screenshots further down!
 
 - `web/` — Vite + React app, served from a private S3 bucket through CloudFront
