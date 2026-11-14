@@ -7,6 +7,7 @@ import {
   categoryName,
   formatHours,
   formatWeek,
+  snapToWeek,
   weekStartOf,
   type Entry,
   type EntryInput,
@@ -18,6 +19,7 @@ export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
   const [entries, setEntries] = useState<Entry[] | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [projects, setProjects] = useState<string[]>([]);
+  const [notice, setNotice] = useState<{ text: string; week: string } | null>(null);
 
   const load = useCallback(async () => {
     setEntries(null);
@@ -31,6 +33,7 @@ export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
   useEffect(() => {
     load();
     setEditingId(null);
+    setNotice(null);
   }, [load]);
 
   // Project suggestions from the last ~6 months
@@ -54,7 +57,13 @@ export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
 
   async function create(input: EntryInput) {
     const entry = await api.createEntry(input);
-    setEntries((cur) => [...(cur ?? []), entry]);
+    setProjects((cur) => (cur.includes(entry.project) ? cur : [...cur, entry.project]));
+    if (entry.weekStart === weekStart) {
+      setEntries((cur) => [...(cur ?? []), entry]);
+      setNotice(null);
+    } else {
+      setNotice({ text: `Added ${formatHours(entry.hours)} to ${formatWeek(entry.weekStart)}.`, week: entry.weekStart });
+    }
   }
 
   async function update(id: string, input: EntryInput) {
@@ -88,6 +97,12 @@ export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
         <button className="secondary" onClick={() => setWeekStart(addWeeks(weekStart, 1))} aria-label="Next week">
           ›
         </button>
+      </div>
+      <div className="week-jump">
+        <label>
+          Jump to week of
+          <input type="date" value={weekStart} onChange={(e) => e.target.value && setWeekStart(snapToWeek(e.target.value))} />
+        </label>
         {weekStart !== thisWeek && (
           <button className="link" onClick={() => setWeekStart(thisWeek)}>
             This week
@@ -98,6 +113,14 @@ export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
       <div className="card">
         <h3>Add entry</h3>
         <EntryForm weekStart={weekStart} projectSuggestions={allProjects} onSave={create} />
+        {notice && (
+          <p className="muted notice">
+            {notice.text}{" "}
+            <button className="link" onClick={() => setWeekStart(notice.week)}>
+              View that week
+            </button>
+          </p>
+        )}
       </div>
 
       {summary && <WeekSummary week={summary} title="Week summary by category" />}

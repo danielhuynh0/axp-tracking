@@ -1,5 +1,14 @@
-import { useState, type FormEvent } from "react";
-import { CATEGORIES, categoryName, formatHours, splitHours, type CategoryId, type EntryInput } from "./domain";
+import { useEffect, useState, type FormEvent } from "react";
+import {
+  CATEGORIES,
+  categoryName,
+  formatHours,
+  formatWeek,
+  snapToWeek,
+  splitHours,
+  type CategoryId,
+  type EntryInput,
+} from "./domain";
 
 type Props = {
   weekStart: string;
@@ -16,6 +25,10 @@ export function EntryForm({ weekStart, initial, projectSuggestions, onSave, onCa
   const [categories, setCategories] = useState<CategoryId[]>(initial?.categories ?? []);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // New entries can target any week; it follows the page's week until changed.
+  // Edits stay in their week since the entry's id is tied to it.
+  const [week, setWeek] = useState(weekStart);
+  useEffect(() => setWeek(weekStart), [weekStart]);
 
   const hoursNum = Number(hours);
   const each = splitHours({ hours: hoursNum || 0, categories });
@@ -30,7 +43,7 @@ export function EntryForm({ weekStart, initial, projectSuggestions, onSave, onCa
     try {
       // Keep categories in NCARB order regardless of click order
       const ordered = CATEGORIES.map((c) => c.id).filter((id) => categories.includes(id));
-      await onSave({ weekStart, hours: hoursNum, project, note, categories: ordered });
+      await onSave({ weekStart: week, hours: hoursNum, project, note, categories: ordered });
       if (!initial) {
         setHours("");
         setNote("");
@@ -47,6 +60,15 @@ export function EntryForm({ weekStart, initial, projectSuggestions, onSave, onCa
 
   return (
     <form className="entry-form" onSubmit={submit}>
+      {!initial && (
+        <label>
+          Week of
+          <div className="week-picker">
+            <input type="date" required value={week} onChange={(e) => e.target.value && setWeek(snapToWeek(e.target.value))} />
+            <span className="muted">{formatWeek(week)}</span>
+          </div>
+        </label>
+      )}
       <div className="row">
         <label className="hours">
           Hours
