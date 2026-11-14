@@ -105,7 +105,7 @@ export function LogWeek({ onError }: { onError: (err: unknown) => void }) {
         </label>
         {weekStart !== thisWeek && (
           <button className="link" onClick={() => setWeekStart(thisWeek)}>
-            This week
+            Jump to this week
           </button>
         )}
       </div>
